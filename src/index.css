@@ -36,3 +36,7 @@
   right: 25%; /* Matches right-1/4 */
   animation-delay: 2s; /* Matches style={{ animationDelay: '2s' }} */
 }
+
+.card-glass {
+    @apply backdrop-blur-sm bg-white/10 border border-white/20 rounded-xl;
+}

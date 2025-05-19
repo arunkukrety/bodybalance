@@ -197,12 +197,12 @@
   position: relative;
 }
 
-.calendar-dropdown {
-  position: fixed;
+.calendar-dropdown-improved {
+  position: relative;
   transform: translateY(0);
   z-index: 9999;
-  margin-top: 0.5rem;
-  width: min(100%, 320px);
+  margin-top: 1rem;
+  width: min(100%, 620px);
 }
 
 .react-calendar {
@@ -230,7 +230,7 @@
 
 .react-calendar__navigation button:enabled:hover,
 .react-calendar__navigation button:enabled:focus {
-  background-color: rgba(255, 255, 255, 0.1) !important;
+  background-color: rgba(114, 84, 84, 0.1) !important;
   border-radius: 0.5rem;
 }
 

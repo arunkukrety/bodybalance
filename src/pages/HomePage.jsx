@@ -1,24 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import mockData from '../MockData';
-
+import { achievements } from '../data/achievements';
+import Header from '../components/Header';
+import { AchievementsMenu } from '../components/AchievementsMenu';
 
 // Mock data for the trend graph
 
-
-const Header = () => (
-    <header className="flex justify-between items-center mb-6 animate-fade-in">
-        <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">BodySync</h1>
-            <p className="text-gray-400">Good morning, Alex</p>
-        </div>
-        <div className="flex gap-4">
-            <Link to="/home" className="px-4 py-2 rounded-lg transition-colors bg-green-700 text-white">Dashboard</Link>
-            <Link to="/data" className="px-4 py-2 rounded-lg transition-colors hover:bg-secondary">Log Weight</Link>
-        </div>
-    </header>
-);
 
 const SnapshotCard = () => (
     <div className="card-glass p-6 animate-scale-in delay-75 transition-all duration-300 hover:shadow-2xl green-tint-gradient">
@@ -71,27 +60,84 @@ const TrendGraph = () => {
     );
 };
 
+const Milestones = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const completedCount = achievements.filter(a => a.completed).length;
 
-const Milestones = () => (
-  <div className="card-glass p-6 animate-scale-in delay-300 green-tint-gradient">
-    <div className="flex justify-between items-center mb-4">
-      <h2 className="text-xl font-semibold text-white">Milestones</h2>
-      <span className="text-muted-foreground text-sm">3/5 achieved</span>
-    </div>
-    <div className="mb-6">
-      <div className="flex justify-between text-sm mb-1">
-        <span>Overall Goal Progress</span>
-        <span>70%</span>
+  return (
+    <div className="card-glass p-6 animate-scale-in delay-300 green-tint-gradient">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold text-white">Milestones</h2>
+        <span className="text-muted-foreground text-sm">
+          {completedCount}/{achievements.length} achieved
+        </span>
       </div>
-      <div className="h-2 bg-secondary rounded-full overflow-hidden">
-        <div className="h-full bg-primary rounded-full transition-all duration-1000 ease-out" style={{width: '70%'}} />
+      
+      {/* Progress Bar */}
+      <div className="mb-6">
+        <div className="flex justify-between text-sm mb-1">
+          <span>Overall Goal Progress</span>
+          <span>70%</span>
+        </div>
+        <div className="h-2 bg-secondary rounded-full overflow-hidden">
+          <div className="h-full bg-primary rounded-full transition-all duration-1000 ease-out" style={{width: '70%'}} />
+        </div>
+      </div>
+
+      {/* Achievements Section */}
+      <div>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-full flex justify-between items-center p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+        >
+          <span className="text-white font-medium">Achievements</span>
+          <svg
+            className={`w-5 h-5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <div className={`achievements-dropdown ${isOpen ? 'open' : ''} mt-2 pr-2`}>
+          <div className="space-y-2">
+            {achievements.map((achievement) => (
+              <div
+                key={achievement.id}
+                className={`achievement-item flex items-center gap-3 p-3 rounded-lg ${
+                  achievement.completed ? 'bg-success/10 border border-success/20' : 'bg-white/5'
+                }`}
+              >
+                <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
+                  achievement.completed ? 'bg-success/20' : 'bg-white/10'
+                }`}>
+                  <span className="text-lg">{achievement.icon}</span>
+                </div>
+                <div className="flex-1">
+                  <p className={`font-medium ${
+                    achievement.completed ? 'text-success' : 'text-muted-foreground'
+                  }`}>
+                    {achievement.title}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {achievement.description}
+                  </p>
+                </div>
+                {achievement.completed && (
+                  <span className="text-xs bg-success/20 text-success px-2 py-1 rounded-full">
+                    Completed
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
-    <div className="space-y-4">
-      {/* Add milestone items here */}
-    </div>
-  </div>
-);
+  );
+};
 
 const ActivitySidebar = () => (
   <div className="card-glass p-6 h-full animate-scale-in delay-450 green-tint-gradient">
@@ -101,7 +147,60 @@ const ActivitySidebar = () => (
         <p className="text-muted-foreground text-sm mb-1">Total Weigh-ins</p>
         <p className="text-2xl font-bold text-white">31</p>
       </div>
-      {/* Add other activity sections */}
+      <div>
+        <p className="text-muted-foreground text-sm mb-1">Longest Streak</p>
+        <div className="flex items-baseline gap-2">
+          <p className="text-2xl font-bold text-white">11</p>
+          <p className="text-muted-foreground">days</p>
+        </div>
+      </div>
+
+      {/* Weight Tracking Days */}
+      <div className="pt-4 border-t border-white/10">
+        <p className="text-muted-foreground text-sm mb-3">Weight Tracking Days</p>
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <span className="text-success flex items-center gap-1">
+              <span className="inline-block h-3 w-3 bg-success rounded-full"></span>
+              Loss Days
+            </span>
+            <span className="font-medium text-white">24</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-danger flex items-center gap-1">
+              <span className="inline-block h-3 w-3 bg-danger rounded-full"></span>
+              Gain Days
+            </span>
+            <span className="font-medium text-white">5</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-muted-foreground flex items-center gap-1">
+              <span className="inline-block h-3 w-3 bg-muted-foreground rounded-full"></span>
+              Stable Days
+            </span>
+            <span className="font-medium text-white">1</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Achievements */}
+      <div className="pt-4 border-t border-white/10">
+        <p className="text-muted-foreground text-sm mb-3">Achievements</p>
+        <div className="flex flex-wrap gap-2">
+          {achievements
+            .filter(a => a.completed)
+            .slice(0, 3)
+            .map(achievement => (
+              <div 
+                key={achievement.id}
+                className="h-10 w-10 rounded-full bg-success/20 flex items-center justify-center" 
+                title={achievement.title}
+              >
+                <span className="text-lg">{achievement.icon}</span>
+              </div>
+            ))}
+        </div>
+      </div>
     </div>
   </div>
 );
@@ -110,7 +209,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#121316] text-white p-6 ">
       <div className="container mx-auto px-4 py-6 max-w-7xl">
-        <Header />
+        <Header activePage={"dashboard"} />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <SnapshotCard />

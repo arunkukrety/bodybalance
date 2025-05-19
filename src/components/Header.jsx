@@ -31,6 +31,14 @@ const Header = ({ activePage }) => {
                 >
                     Log Weight
                 </Link>
+                <Link
+                    to="/ai-analysis"
+                    className={`px-3 sm:px-4 py-2 rounded-lg transition-colors text-xs sm:text-base ${
+                        activePage === "ai-analysis" ? "bg-green-700 text-white" : "hover:bg-secondary"
+                    }`}
+                >
+                    AI Analysis
+                </Link>
             </nav>
         </header>
     );

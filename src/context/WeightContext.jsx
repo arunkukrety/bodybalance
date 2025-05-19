@@ -1,9 +1,12 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import mockData from '../data/MockData';
+import { useUser } from './UserContext';
 
 const WeightContext = createContext(null);
 
 export const WeightProvider = ({ children }) => {
+    const { userData } = useUser();
+
     const [weightEntries, setWeightEntries] = useState(() => {
         const savedEntries = localStorage.getItem('weightEntries');
         return savedEntries ? JSON.parse(savedEntries) : mockData;
@@ -11,7 +14,7 @@ export const WeightProvider = ({ children }) => {
 
     const [targetWeight, setTargetWeight] = useState(() => {
         const savedTarget = localStorage.getItem('targetWeight');
-        return savedTarget ? parseFloat(savedTarget) : 68.0;
+        return savedTarget ? parseFloat(savedTarget) : parseFloat(userData?.targetWeight || 68.0);
     });
 
     useEffect(() => {
@@ -22,9 +25,15 @@ export const WeightProvider = ({ children }) => {
         localStorage.setItem('targetWeight', targetWeight.toString());
     }, [targetWeight]);
 
+    useEffect(() => {
+        if (userData?.targetWeight) {
+            setTargetWeight(parseFloat(userData.targetWeight));
+        }
+    }, [userData]);
+
     // Calculate statistics
     const stats = {
-        currentWeight: weightEntries[0]?.weight || 0,
+        currentWeight: weightEntries.length > 0 ? weightEntries[0].weight : (userData?.weight || 0),
         totalEntries: weightEntries.length,
         tracking: weightEntries.reduce((acc, entry, index) => {
             if (index === weightEntries.length - 1) return acc;

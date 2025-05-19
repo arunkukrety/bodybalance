@@ -7,18 +7,21 @@ import { Home } from 'lucide-react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './index.css'; // Import your global styles
 import { WeightProvider } from './context/WeightContext';
+import { UserProvider } from './context/UserContext';
 
 export default function App() {
   return (
-    <WeightProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/data" element={<DataPage />} />
-        </Routes>
-      </Router>
-    </WeightProvider>
+    <UserProvider>
+      <WeightProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/data" element={<DataPage />} />
+          </Routes>
+        </Router>
+      </WeightProvider>
+    </UserProvider>
   );
 }
 

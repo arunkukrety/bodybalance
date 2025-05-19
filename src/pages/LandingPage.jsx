@@ -1,19 +1,28 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-import Button from '../components/Button';
+import { useUser } from '../context/UserContext';
 
 const LandingPage = () => {
-//   const navigate = useNavigate();
-  const [isAnimating, setIsAnimating] = useState(false);
-  
-  const handleGetStarted = () => {
-    setIsAnimating(true);
-    // Navigate after animation completes
-    // setTimeout(() => {
-    //   navigate('/dashboard');
-    // }, 1000); // Match this with animation duration
+  const navigate = useNavigate();
+  const { setUserData, calculateBMI } = useUser();
+  const [formData, setFormData] = useState({
+    name: '',
+    height: '',
+    weight: '',
+    targetWeight: ''
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const bmi = calculateBMI(parseFloat(formData.weight), parseFloat(formData.height));
+    setUserData({
+      ...formData,
+      bmi,
+      initialWeight: formData.weight,
+      dateJoined: new Date().toISOString()
+    });
+    navigate('/home');
   };
 
   return (
@@ -26,26 +35,6 @@ const LandingPage = () => {
         </div>
       </div>
 
-      {/* Full screen transition animation */}
-      <AnimatePresence>
-        {isAnimating && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className="rounded-full bg-primary"
-              initial={{ scale: 0 }}
-              animate={{ scale: 20 }}
-              transition={{ duration: 1.0, ease: "easeInOut" }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Content */}
       <div className="container mx-auto px-4 py-16 relative z-10">
         <div className="flex flex-col items-center justify-center min-h-[80vh] text-center">
           {/* App Name */}
@@ -78,20 +67,85 @@ const LandingPage = () => {
             An aesthetic, private, and interactive weight tracker built just for you.
           </motion.p>
           
-          {/* Get Started Button */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
+            className="w-full max-w-4xl"
           >
-            <Button 
-              onClick={handleGetStarted} 
-              size="lg"
-              className="bg-primary text-white px-8 py-6 rounded-xl text-lg font-medium shadow-[0_0_15px_rgba(16,185,129,0.5)] hover:shadow-[0_0_25px_rgba(16,185,129,0.7)] transition-all duration-300 animate-glow"
-            >
-              <span>Get Started</span>
-              <ArrowRight className="ml-2" />
-            </Button>
+            <form onSubmit={handleSubmit} className="card-glass p-8 space-y-8 green-tint-gradient animate-scale-in">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="space-y-2 group">
+                  <label className="text-left block text-white text-sm transition-colors group-hover:text-primary">Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-4 py-3 text-white bg-secondary rounded-lg border border-white/10 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder-white/60 hover:bg-white/10 hover:border-primary/30"
+                    placeholder="Enter your name"
+                  />
+                </div>
+
+                <div className="space-y-2 group">
+                  <label className="text-left block text-white text-sm transition-colors group-hover:text-primary">Height</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      required
+                      
+                      value={formData.height}
+                      onChange={(e) => setFormData({ ...formData, height: e.target.value })}
+                      className="w-full px-4 py-3 text-white bg-secondary rounded-lg border border-white/10 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder-white/60 hover:bg-white/10 hover:border-primary/30"
+                      placeholder="Enter height"
+                    />
+                    <span className="absolute right-4 top-3 text-muted-foreground">cm</span>
+                  </div>
+                </div>
+
+                <div className="space-y-2 group">
+                  <label className="text-left block text-white text-sm transition-colors group-hover:text-primary">Current Weight</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      required
+                      value={formData.weight}
+                      onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
+                      className="w-full px-4 py-3 text-white bg-secondary rounded-lg border border-white/10 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder-white/60 hover:bg-white/10 hover:border-primary/30"
+                      placeholder="Enter weight"
+                    />
+                    <span className="absolute right-4 top-3 text-muted-foreground">kg</span>
+                  </div>
+                </div>
+
+                <div className="space-y-2 group">
+                  <label className="text-left block text-white text-sm transition-colors group-hover:text-primary">Target Weight</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      required
+                      value={formData.targetWeight}
+                      onChange={(e) => setFormData({ ...formData, targetWeight: e.target.value })}
+                      className="w-full px-4 py-3 text-white bg-secondary rounded-lg border border-white/10 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder-white/60 hover:bg-white/10 hover:border-primary/30"
+                      placeholder="Enter target weight"
+                    />
+                    <span className="absolute right-4 top-3 text-muted-foreground">kg</span>
+                  </div>
+                </div>
+              </div>
+
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <button
+                  type="submit"
+                  className="px-8 py-4 bg-green-700 hover:cursor-pointer text-white font-medium rounded-xl transition-all duration-300 hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] active:shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:bg-primary/90"
+                >
+                  Start Your Journey
+                </button>
+              </motion.div>
+            </form>
           </motion.div>
         </div>
       </div>

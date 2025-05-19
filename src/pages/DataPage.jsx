@@ -35,6 +35,7 @@ const ManualEntryForm = ({ onSubmit }) => {
             month: 'long',
             year: 'numeric'
         });
+        console.log('Submitting Entry:', { date: formattedDate, weight });
         onSubmit({ date: formattedDate, weight });
         setWeight('');
     };
@@ -98,7 +99,7 @@ const ManualEntryForm = ({ onSubmit }) => {
                 <div className="pt-2"> {/* Added pt-2 for spacing */}
                     <button
                         type="submit"
-                        className="w-full md:w-auto px-6 py-2 bg-primary text-primary-foreground font-medium rounded-lg transition-transform hover:scale-105 active:scale-95"
+                        className="w-full md:w-auto px-6 py-2 bg-green-700 text-white font-medium rounded-lg transition-transform hover:scale-105 active:scale-95"
                     >
                         Save Entry
                     </button>
@@ -179,24 +180,33 @@ export default function DataPage() {
         })
         .sort((a, b) => b.dateObj - a.dateObj); // Sort by date in descending order
 
+    console.log('Initial Entries:', initialEntries);
     const [weightEntries, setWeightEntries] = useState(initialEntries);
 
     const handleEntrySubmit = (newEntry) => {
+        console.log('New Entry Received:', newEntry);
         const lastEntry = weightEntries[0];
+        console.log('Last Entry:', lastEntry);
+
         const change = lastEntry 
             ? parseFloat((newEntry.weight - lastEntry.weight).toFixed(1))
             : 0;
+        
+        console.log('Calculated Change:', change);
 
         const formattedEntry = {
             ...newEntry,
             dateObj: new Date(newEntry.date), // Add dateObj for sorting
             change: change
         };
+        
+        console.log('Formatted Entry:', formattedEntry);
 
         // Insert and sort
         const updatedEntries = [formattedEntry, ...weightEntries]
             .sort((a, b) => b.dateObj - a.dateObj);
-
+        
+        console.log('Updated Entries:', updatedEntries);
         setWeightEntries(updatedEntries);
     };
 

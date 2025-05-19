@@ -7,40 +7,70 @@ import Header from '../components/Header';
 import { AchievementsMenu } from '../components/AchievementsMenu';
 import { useWeight } from '../context/WeightContext';
 import { ActivitySidebar } from '../components/ActivitySidebar';
+import { useUser } from '../context/UserContext';
 
 // Mock data for the trend graph
 
-const SnapshotCard = () => (
-    <div className="card-glass p-6 animate-scale-in delay-75 transition-all duration-300 hover:shadow-2xl green-tint-gradient">
-        <h2 className="text-xl font-semibold mb-4">Today's Snapshot</h2>
-        <div className="grid grid-cols-2 gap-6">
-            <div className="text-center">
-                <p className="text-muted-foreground text-sm mb-1">Current Weight</p>
-                <p className="text-4xl font-bold text-success">69.2 kg</p>
-                <p className="mt-2 text-sm text-success">↓ 0.8 kg this week</p>
-            </div>
-            <div className="text-center">
-                <p className="text-muted-foreground text-sm mb-1">Target Weight</p>
-                <p className="text-4xl font-bold">68 kg</p>
-                <p className="mt-2 text-sm text-muted-foreground">1.2 kg to go</p>
-            </div>
-        </div>
-        <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
-            <div>
-                <span className="text-muted-foreground text-sm">BMI</span>
-                <div className="flex items-baseline gap-2">
-                    <span className="text-xl font-semibold">22.6</span>
-                    <span className="text-sm px-2 py-0.5 rounded-full bg-success/20 text-success">Normal</span>
+const SnapshotCard = () => {
+    const { userData, calculateBMI, getBMICategory } = useUser();
+    const { weightEntries } = useWeight();
+    
+  
+    
+    // Get the most recent weight entry or use initial weight from user data
+    const currentWeight = userData?.weight;
+
+   
+    // Get weight from 7 days ago for weekly change
+    const weekAgoEntry = weightEntries[6];
+    const weeklyChange = weekAgoEntry 
+        ? (currentWeight - weekAgoEntry.weight).toFixed(1)
+        : 0;
+
+    // Calculate remaining weight to target
+    const targetWeight = parseFloat(userData?.targetWeight);
+    const toTarget = (currentWeight - targetWeight).toFixed(1);
+    
+    // Calculate BMI using current weight
+    const bmi = calculateBMI(currentWeight, parseFloat(userData?.height));
+    const bmiCategory = getBMICategory(bmi);
+
+    return (
+        <div className="card-glass p-6 animate-scale-in delay-75 transition-all duration-300 hover:shadow-2xl green-tint-gradient">
+            <h2 className="text-xl font-semibold mb-4">Today's Snapshot</h2>
+            <div className="grid grid-cols-2 gap-6">
+                <div className="text-center">
+                    <p className="text-muted-foreground text-sm mb-1">Current Weight</p>
+                    <p className="text-4xl font-bold text-success">{currentWeight} kg</p>
+                    <p className="mt-2 text-sm text-success">
+                        {weeklyChange < 0 ? '↓' : '↑'} {Math.abs(weeklyChange)} kg this week
+                    </p>
+                </div>
+                <div className="text-center">
+                    <p className="text-muted-foreground text-sm mb-1">Target Weight</p>
+                    <p className="text-4xl font-bold">{userData.targetWeight} kg</p>
+                    <p className="mt-2 text-sm text-muted-foreground">{Math.abs(toTarget)} kg to go</p>
                 </div>
             </div>
-            <div className=" h-24 w-24 rounded-full flex items-center justify-center animate-glow">
-                <div className="h-20 w-20 rounded-full flex items-center justify-center bg-green-700/20">
-                    <span className="text-sm font-medium ">On Track!</span>
+            <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+                <div>
+                    <span className="text-muted-foreground text-sm">BMI</span>
+                    <div className="flex items-baseline gap-2">
+                        <span className="text-xl font-semibold">{bmi}</span>
+                        <span className={`text-sm px-2 py-0.5 rounded-full bg-${bmiCategory.color}/20 text-${bmiCategory.color}`}>
+                            {bmiCategory.label}
+                        </span>
+                    </div>
+                </div>
+                <div className="h-24 w-24 rounded-full flex items-center justify-center animate-glow">
+                    <div className="h-20 w-20 rounded-full flex items-center justify-center bg-green-700/20">
+                        <span className="text-sm font-medium">On Track!</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-);
+    );
+};
 
 const TrendGraph = () => {
     const [timeRange, setTimeRange] = useState(30); // Default to 30 days

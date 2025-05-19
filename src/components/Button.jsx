@@ -1,13 +1,18 @@
 import React from 'react';
-const Button = ({ children, onClick, size, className }) => {
+import { useNavigate } from 'react-router-dom';
+
+const MyComponent = () => {
+  const navigate = useNavigate();
+
+  const onClick = () => {
+    navigate('/home');
+  };
+
   return (
-    <button
-      onClick={onClick}
-      className={`px-4 py-2 rounded ${size === 'lg' ? 'text-md' : ''} ${className} bg-green-500`}
-    >
-      {children}
+    <button onClick={onClick} className="px-4 py-2 bg-green-700 text-white rounded hover:cursor-pointer ">
+      Go to Dashboard
     </button>
   );
 };
 
-export default Button; // Default export
+export default MyComponent;

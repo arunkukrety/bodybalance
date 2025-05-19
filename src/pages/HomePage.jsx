@@ -14,14 +14,14 @@ const Header = () => (
             <p className="text-gray-400">Good morning, Alex</p>
         </div>
         <div className="flex gap-4">
-            <Link to="/dashboard" className="px-4 py-2 rounded-lg transition-colors bg-primary text-primary-foreground">Dashboard</Link>
+            <Link to="/home" className="px-4 py-2 rounded-lg transition-colors bg-green-700 text-white">Dashboard</Link>
             <Link to="/data" className="px-4 py-2 rounded-lg transition-colors hover:bg-secondary">Log Weight</Link>
         </div>
     </header>
 );
 
 const SnapshotCard = () => (
-    <div className="card-glass p-6 animate-scale-in delay-75 transition-all duration-300 hover:shadow-2xl">
+    <div className="card-glass p-6 animate-scale-in delay-75 transition-all duration-300 hover:shadow-2xl green-tint-gradient">
         <h2 className="text-xl font-semibold mb-4">Today's Snapshot</h2>
         <div className="grid grid-cols-2 gap-6">
             <div className="text-center">
@@ -43,9 +43,9 @@ const SnapshotCard = () => (
                     <span className="text-sm px-2 py-0.5 rounded-full bg-success/20 text-success">Normal</span>
                 </div>
             </div>
-            <div className="h-24 w-24 rounded-full flex items-center justify-center animate-glow">
-                <div className="h-20 w-20 rounded-full flex items-center justify-center bg-success/20">
-                    <span className="text-sm font-medium">On Track!</span>
+            <div className=" h-24 w-24 rounded-full flex items-center justify-center animate-glow">
+                <div className="h-20 w-20 rounded-full flex items-center justify-center bg-green-700/20">
+                    <span className="text-sm font-medium ">On Track!</span>
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@ const SnapshotCard = () => (
 
 const TrendGraph = () => {
     return (
-        <div className="card-glass p-6 animate-scale-in delay-150">
+        <div className="card-glass p-6 animate-scale-in delay-150 green-tint-gradient">
             <h2 className="text-xl font-semibold mb-4">Weight Trend (Last 30 Days)</h2>
             <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
@@ -73,7 +73,7 @@ const TrendGraph = () => {
 
 
 const Milestones = () => (
-  <div className="card-glass p-6 animate-scale-in delay-300">
+  <div className="card-glass p-6 animate-scale-in delay-300 green-tint-gradient">
     <div className="flex justify-between items-center mb-4">
       <h2 className="text-xl font-semibold text-white">Milestones</h2>
       <span className="text-muted-foreground text-sm">3/5 achieved</span>
@@ -94,7 +94,7 @@ const Milestones = () => (
 );
 
 const ActivitySidebar = () => (
-  <div className="card-glass p-6 h-full animate-scale-in delay-450">
+  <div className="card-glass p-6 h-full animate-scale-in delay-450 green-tint-gradient">
     <h2 className="text-xl font-semibold mb-6 text-white">Monthly Activity</h2>
     <div className="space-y-6">
       <div>
@@ -108,7 +108,7 @@ const ActivitySidebar = () => (
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-[#121316] text-white p-6">
+    <div className="min-h-screen bg-[#121316] text-white p-6 ">
       <div className="container mx-auto px-4 py-6 max-w-7xl">
         <Header />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
